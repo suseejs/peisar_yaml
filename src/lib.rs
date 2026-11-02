@@ -55,8 +55,7 @@ pub fn load_yaml<T: DeserializeOwned + 'static>(path: impl AsRef<Path>) -> Resul
 ///
 /// Returns an N-API error if the YAML input cannot be parsed.
 #[cfg(feature = "npm")]
-#[napi(js_name = "yamlParser")]
-#[napi(ts_return_type = "Record<string, any>")]
+#[napi(js_name = "yamlParser", ts_return_type = "Record<string, any>")]
 pub fn yaml_parser_napi(yaml_str: String) -> Result<Value, napi::Error> {
     parse_yaml_value(&yaml_str).map_err(napi::Error::from_reason)
 }
@@ -68,8 +67,7 @@ pub fn yaml_parser_napi(yaml_str: String) -> Result<Value, napi::Error> {
 /// read failures panic in this N-API wrapper; parse failures are returned as
 /// N-API errors.
 #[cfg(feature = "npm")]
-#[napi(js_name = "loadYaml")]
-#[napi(ts_return_type = "Record<string, any>")]
+#[napi(js_name = "loadYaml", ts_return_type = "Record<string, any>")]
 pub fn load_yaml_napi(file_path: String) -> Result<Value, napi::Error> {
     use std::env;
     let cwd = env::current_dir().unwrap_or(".".into());
