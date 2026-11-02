@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 readme = "README.md"
 license = "Apache-2.0"
-repository = "https://github.com/phothinmg/peisar"
+repository = "https://github.com/suseejs/peisar_yaml.git"
 description = "A YAML parsing helpers for Rust and an optional N-API interface for Node.js"
 
 
