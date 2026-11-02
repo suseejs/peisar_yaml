@@ -3,13 +3,13 @@
 <div align="center">
  <img src="https://pub-c9ba018358dd48a99b70013b65a25e5f.r2.dev/logo/peisar.webp" width="160" height="160" alt="prisar" />
   <h1>Peisar YAML</h1>
-  <p>A YAML parsing helpers for Rust and an optional N-API interface for Node.js</p>
+  <p>YAML parsing helpers for Rust and an optional N-API interface for Node.js</p>
 </div>
 
 `peisar_yaml` provides YAML parsing helpers for Rust and an optional N-API
-interface for Node.js. The default Rust API can parse YAML into a dynamic
-`serde_json::Value`, deserialize it into your own Serde types, read YAML files,
-and extract YAML front matter from Markdown.
+interface for Node.js. With the default features, it can parse YAML into a
+dynamic `serde_json::Value`, deserialize it into your own Serde types, read
+YAML files, and extract YAML front matter from Markdown.
 
 ## Rust usage
 
@@ -17,11 +17,11 @@ Add the crate to your `Cargo.toml` (adjust the path to the checkout):
 
 ```toml
 [dependencies]
-peisar_yaml = { path = "../peisar_yaml" }
+peisar_yaml = "0.1.0"
 serde = { version = "1", features = ["derive"] }
 ```
 
-Parse into a dynamic value:
+Parse into a dynamic JSON-compatible value:
 
 ```rust
 let value = peisar_yaml::yaml_parser("name: example\nretries: 3\n")?;
@@ -58,22 +58,47 @@ assert_eq!(parsed.yaml_data().unwrap()["title"], "Example");
 # Ok::<(), String>(())
 ```
 
-Parsing and file-loading functions return `Result`; errors are represented as
-strings in the default Rust API. Relative file paths are resolved against the
-process's current working directory.
+The default Rust API provides:
+
+| Function                         | Description                                                                       |
+| -------------------------------- | --------------------------------------------------------------------------------- |
+| `yaml_parser(yaml_str)`          | Parse YAML into a `serde_json::Value`.                                            |
+| `parse_yaml_config<T>(yaml_str)` | Deserialize YAML into a caller-provided `T: DeserializeOwned`.                    |
+| `load_yaml<T>(path)`             | Read a YAML file and deserialize it into a caller-provided `T: DeserializeOwned`. |
+| `frontmatter(content)`           | Return the Markdown body and optional YAML metadata.                              |
+
+These functions return `Result` with parser or file-read errors represented as
+strings. Relative paths passed to `load_yaml` are resolved from the process's
+current working directory. `frontmatter` returns the input unchanged with no
+metadata when there is no complete leading front-matter block; invalid YAML in
+a complete block returns an error.
 
 ## Node.js / N-API
 
 Enable the `npm` Cargo feature to compile the N-API exports:
 
 ```toml
-peisar_yaml = { path = "../peisar_yaml", features = ["npm"] }
+peisar_yaml = { version = "0.1.0", features = ["npm"] }
 ```
 
-This feature exposes `yaml_parser`, `load_yaml`, and `frontmatter` through
-N-API. Building a distributable Node.js package additionally requires an
-N-API-compatible packaging setup in the consuming project. In this interface,
-`load_yaml` resolves paths from the process's current working directory.
+The N-API interface exposes these JavaScript functions:
+
+| JavaScript function    | Description                                                                                             |
+| ---------------------- | ------------------------------------------------------------------------------------------------------- |
+| `yamlParser(yamlStr)`  | Parse YAML and return its JSON-compatible value.                                                        |
+| `loadYaml(filePath)`   | Read and parse YAML, returning its JSON-compatible value.                                               |
+| `frontmatter(content)` | Return `{ cleanContent, yamlData }`; `yamlData` is absent when there is no complete front-matter block. |
+
+The N-API feature also provides the Rust `parse_yaml_config<T>` function, but
+the JavaScript interface does not expose it. In this feature, the Rust
+`yaml_parser`, `load_yaml`, and `frontmatter` functions return N-API errors
+instead of string errors. YAML parse failures from JavaScript are thrown as
+errors; file paths passed to `loadYaml` are resolved from the process's
+current working directory. File-read failures in the current N-API wrapper
+panic rather than returning a recoverable error.
+
+The crate provides the native N-API exports; using them from Node.js requires
+a loader/package that supplies the platform-specific native binding.
 
 ## Development
 

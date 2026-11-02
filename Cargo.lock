@@ -270,7 +270,6 @@ name = "peisar_yaml"
 version = "0.1.0"
 dependencies = [
  "napi",
- "napi-build",
  "napi-derive",
  "noyalib",
  "serde",

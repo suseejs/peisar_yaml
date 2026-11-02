@@ -1,3 +1,13 @@
 {
-  "cSpell.words": ["cdylib", "napi", "noyalib", "prisar", "rlib", "serde"]
+  "cSpell.words": [
+    "cdylib",
+    "emnapi",
+    "frontmatter",
+    "napi",
+    "noyalib",
+    "prisar",
+    "rlib",
+    "serde",
+    "wasip"
+  ]
 }

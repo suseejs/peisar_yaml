@@ -3,6 +3,8 @@ name = "peisar_yaml"
 version = "0.1.0"
 edition = "2024"
 readme = "README.md"
+license = "Apache-2.0"
+repository = "https://github.com/phothinmg/peisar"
 description = "A YAML parsing helpers for Rust and an optional N-API interface for Node.js"
 
 
@@ -13,13 +15,9 @@ serde_json = { version = "1.0.154", features = ["preserve_order"] }
 napi = { version = "3", features = ["serde-json"], optional = true }
 napi-derive = { version = "3", optional = true }
 
-[build-dependencies]
-napi-build = "2"
-
 [lib]
 name = "peisar_yaml"
 path = "src/lib.rs"
-crate-type = ["rlib", "cdylib"]
 
 [features]
 default = []
